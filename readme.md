@@ -1,6 +1,8 @@
 # Lo del trabajo TA-2.1  esta en la linea 100 (califique con ojos de madre ://)
 
 # PE-2.1 Configuración y primer servicio middleware
+# PE-2.2 Documentación y versionado de API estan en la lnea 137
+
 
 Servidor Express desarrollado con TypeScript, módulos ES y middlewares personalizados.
 
@@ -132,3 +134,27 @@ Ran all test suites.
 - Header `x-api-key` ausente → responde `401`.
 - API key incorrecta → responde `401`.
 - API key válida → invoca `next()` sin generar respuesta.
+
+## Pruebas de los endpoints
+
+Servidor ejecutándose en:
+
+```text
+http://localhost:3000
+```
+PE-2.2 Documentación y versionado de API
+### Escenario 1 — POST /v1/inscripciones con campos válidos (201)
+
+![POSTMAN 1](docs/screenshots/postman1.png)
+
+### Escenario 2 — POST /v2/inscripciones con método de pago válido (201)
+
+![POSTMAN 2](docs/screenshots/postman2.png)
+
+### Escenario 3 — POST /v2/inscripciones sin metodo_pago (400)
+
+![POSTMAN 3](docs/screenshots/postman3.png)
+
+### Escenario 4 — POST /v2/inscripciones con metodo_pago inválido (400)
+
+![POSTMAN 4](docs/screenshots/postman4.png)

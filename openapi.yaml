@@ -8,7 +8,7 @@ info:
     identifier: MIT
 
 servers:
-  - url: http://localhost:3000
+  - url: http://127.0.0.1:3000
     description: Desarrollo local
 
 paths:
@@ -20,7 +20,7 @@ paths:
         - ApiKeyAuth: []
       responses:
         "200":
-          description: Servidor activo.
+          description: Servidor activo
           content:
             application/json:
               schema:
@@ -28,8 +28,9 @@ paths:
               example:
                 status: ok
                 ts: "2026-06-19T23:30:00.000Z"
+
         "401":
-          description: API key ausente o inválida.
+          description: API key ausente o inválida
           content:
             application/json:
               schema:
@@ -40,7 +41,7 @@ paths:
   /v1/inscripciones:
     post:
       operationId: crearInscripcionV1
-      summary: Crear inscripción contrato v1
+      summary: Crear inscripción (contrato v1)
       security:
         - ApiKeyAuth: []
       requestBody:
@@ -50,33 +51,36 @@ paths:
             schema:
               $ref: "#/components/schemas/InscripcionV1"
             example:
-              estudianteId: "uuid-123"
+              estudianteId: "550e8400-e29b-41d4-a716-446655440000"
               materias:
                 - "LTI_05A_458"
               periodoId: "2026-1"
+
       responses:
         "201":
-          description: Inscripción creada.
+          description: Inscripción creada
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/InscripcionV1Response"
               example:
                 version: v1
-                estudianteId: "uuid-123"
+                estudianteId: "550e8400-e29b-41d4-a716-446655440000"
                 materias:
                   - "LTI_05A_458"
                 periodoId: "2026-1"
+
         "400":
-          description: Payload inválido.
+          description: Payload inválido
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Campos requeridos: estudianteId, materias, periodoId"
+
         "401":
-          description: API key ausente o inválida.
+          description: API key ausente o inválida
           content:
             application/json:
               schema:
@@ -87,7 +91,7 @@ paths:
   /v2/inscripciones:
     post:
       operationId: crearInscripcionV2
-      summary: Crear inscripción con método de pago contrato v2
+      summary: Crear inscripción con método de pago (contrato v2)
       security:
         - ApiKeyAuth: []
       requestBody:
@@ -97,27 +101,29 @@ paths:
             schema:
               $ref: "#/components/schemas/InscripcionV2"
             example:
-              estudianteId: "uuid-123"
+              estudianteId: "550e8400-e29b-41d4-a716-446655440000"
               materias:
                 - "LTI_05A_458"
               periodoId: "2026-1"
               payment_method: scholarship
+
       responses:
         "201":
-          description: Inscripción creada.
+          description: Inscripción creada
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/InscripcionV2Response"
               example:
-                version: v2
-                estudianteId: "uuid-123"
+                estudianteId: "550e8400-e29b-41d4-a716-446655440000"
                 materias:
                   - "LTI_05A_458"
                 periodoId: "2026-1"
                 payment_method: scholarship
+                version: v2
+
         "400":
-          description: Payload inválido o payment_method fuera de enum.
+          description: Payload inválido o payment_method fuera del enum
           content:
             application/json:
               schema:
@@ -127,12 +133,14 @@ paths:
                   summary: Falta payment_method
                   value:
                     error: "Campos requeridos: estudianteId, materias, periodoId, payment_method"
+
                 metodoInvalido:
                   summary: Método de pago inválido
                   value:
                     error: "payment_method inválido. Valores: debit, credit, scholarship"
+
         "401":
-          description: API key ausente o inválida.
+          description: API key ausente o inválida
           content:
             application/json:
               schema:
@@ -170,7 +178,6 @@ components:
       properties:
         error:
           type: string
-          minLength: 1
       additionalProperties: false
 
     InscripcionV1:
@@ -182,6 +189,7 @@ components:
       properties:
         estudianteId:
           type: string
+          format: uuid
         materias:
           type: array
           minItems: 1
@@ -216,15 +224,35 @@ components:
               type: string
               enum:
                 - v1
+      unevaluatedProperties: false
 
     InscripcionV2Response:
-      allOf:
-        - $ref: "#/components/schemas/InscripcionV2"
-        - type: object
-          required:
-            - version
-          properties:
-            version:
-              type: string
-              enum:
-                - v2
+      type: object
+      required:
+        - estudianteId
+        - materias
+        - periodoId
+        - payment_method
+        - version
+      properties:
+        estudianteId:
+          type: string
+          format: uuid
+        materias:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        periodoId:
+          type: string
+        payment_method:
+          type: string
+          enum:
+            - debit
+            - credit
+            - scholarship
+        version:
+          type: string
+          enum:
+            - v2
+      additionalProperties: false
