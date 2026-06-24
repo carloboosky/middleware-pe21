@@ -1,4 +1,4 @@
-# Lo del trabajo TA-2.1  esta en la linea 100 (califique con ojos de madre ://)
+# Lo del trabajo TA-2.1  esta en la linea 100 
 
 # PE-2.1 Configuración y primer servicio middleware
 # PE-2.2 Documentación y versionado de API estan en la lnea 137
