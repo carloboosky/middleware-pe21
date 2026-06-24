@@ -158,3 +158,13 @@ PE-2.2 Documentación y versionado de API
 ### Escenario 4 — POST /v2/inscripciones con metodo_pago inválido (400)
 
 ![POSTMAN 4](docs/screenshots/postman4.png)
+
+## Validación OpenAPI
+
+Resultado de `npx @redocly/cli lint openapi.yaml`:
+
+![Redocly lint sin errores](docs/screenshots/lint-sin-errores.png)
+
+## Reflexión: si otro equipo consumiera esta API
+
+Si otro equipo empezara a consumir esta API mañana, agregaría schemas reutilizables para todas las respuestas de error y documentaría con mayor detalle los códigos HTTP de cada endpoint. Esto facilitaría la integración para desarrolladores externos, porque podrían conocer exactamente la estructura de los errores 400 y 401 sin revisar el código fuente ni hacer pruebas manuales.
