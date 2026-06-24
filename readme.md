@@ -167,4 +167,4 @@ Resultado de `npx @redocly/cli lint openapi.yaml`:
 
 ## Reflexión: si otro equipo consumiera esta API
 
-Si otro equipo empezara a consumir esta API mañana, agregaría schemas reutilizables para todas las respuestas de error y documentaría con mayor detalle los códigos HTTP de cada endpoint. Esto facilitaría la integración para desarrolladores externos, porque podrían conocer exactamente la estructura de los errores 400 y 401 sin revisar el código fuente ni hacer pruebas manuales.
+Si un equipo externo empezara a integrar esta API mañana, el primer cambio que haría al contrato OpenAPI sería agregar un schema reutilizable para las respuestas de error de todos los endpoints. Aunque actualmente se documentan errores como 400 y 401, definir un formato estándar permitiría que los consumidores sepan exactamente qué campos recibirán cuando ocurra un problema. Esto reduciría la incertidumbre al integrar la API, evitaría pruebas manuales innecesarias y haría más claro el comportamiento de `/health`, `/v1/inscripciones` y `/v2/inscripciones`.
