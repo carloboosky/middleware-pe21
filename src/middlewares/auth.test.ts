@@ -1,7 +1,7 @@
-import { requireApiKey } from "./auth";
+import { requireJwt  } from "./auth";
 import type { Request, Response, NextFunction } from "express";
 
-describe("requireApiKey", () => {
+describe("requireJwt", () => {
   const createMockResponse = () => {
     const res: Partial<Response> = {};
 
@@ -19,7 +19,7 @@ describe("requireApiKey", () => {
     const res = createMockResponse();
     const next = jest.fn() as NextFunction;
 
-    requireApiKey(req, res, next);
+    requireJwt(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(next).not.toHaveBeenCalled();
@@ -35,7 +35,7 @@ describe("requireApiKey", () => {
     const res = createMockResponse();
     const next = jest.fn() as NextFunction;
 
-    requireApiKey(req, res, next);
+    requireJwt(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(next).not.toHaveBeenCalled();
@@ -51,7 +51,7 @@ describe("requireApiKey", () => {
     const res = createMockResponse();
     const next = jest.fn() as NextFunction;
 
-    requireApiKey(req, res, next);
+    requireJwt(req, res, next);
 
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
