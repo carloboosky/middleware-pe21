@@ -168,3 +168,131 @@ Resultado de `npx @redocly/cli lint openapi.yaml`:
 ## Reflexión: si otro equipo consumiera esta API
 
 Si un equipo externo empezara a integrar esta API mañana, el primer cambio que haría al contrato OpenAPI sería agregar un schema reutilizable para las respuestas de error de todos los endpoints. Aunque actualmente se documentan errores como 400 y 401, definir un formato estándar permitiría que los consumidores sepan exactamente qué campos recibirán cuando ocurra un problema. Esto reduciría la incertidumbre al integrar la API, evitaría pruebas manuales innecesarias y haría más claro el comportamiento de `/health`, `/v1/inscripciones` y `/v2/inscripciones`.
+# PE-2.3 Seguridad JWT
+
+## Descripción
+
+En esta práctica se implementó una capa de seguridad basada en JSON Web Token (JWT) firmado con HMAC-SHA256 y un middleware de Rate Limiting para proteger las rutas del servicio.
+
+Las mejoras implementadas fueron:
+
+- Autenticación mediante JWT.
+- Verificación del algoritmo HS256.
+- Rechazo de ataques mediante `alg:none`.
+- Verificación de la firma utilizando `crypto.timingSafeEqual()`.
+- Validación de los claims `sub` y `exp`.
+- Rate Limiter con una ventana de 15 minutos y máximo de 10 peticiones.
+- Respuesta HTTP 429 cuando se supera el límite permitido.
+
+---
+
+# Generar un token de prueba
+
+### PowerShell
+
+```powershell
+$env:JWT_SECRET="secreto-demo-pe23"
+node generate-token.mjs
+```
+
+### Linux / macOS
+
+```bash
+JWT_SECRET=secreto-demo-pe23 node generate-token.mjs
+```
+
+El script genera un JWT válido con los siguientes claims:
+
+- sub
+- iss
+- aud
+- scope
+- exp
+- jti
+
+---
+
+# Iniciar el servidor
+
+```powershell
+$env:JWT_SECRET="secreto-demo-pe23"
+npm run dev
+```
+
+---
+
+# Probar el servicio
+
+Endpoint:
+
+```text
+POST http://localhost:3000/v2/inscripciones
+```
+
+Header:
+
+```text
+Authorization: Bearer <TOKEN_GENERADO>
+```
+
+Body utilizado:
+
+```json
+{
+  "estudianteID": "uuid-123",
+  "materias": [
+    "LTI_05A_458"
+  ],
+  "periodoID": "2026-1",
+  "metodo_pago": "efectivo"
+}
+```
+
+---
+
+# Resultados esperados
+
+| Prueba | Resultado esperado |
+|---------|--------------------|
+| Token válido | HTTP 201 Created |
+| Firma inválida | HTTP 401 Unauthorized |
+| Token con alg:none | HTTP 401 Unauthorized |
+| Más de 10 peticiones | HTTP 429 Too Many Requests |
+
+---
+
+# Variables de entorno
+
+Crear un archivo `.env` con:
+
+```env
+JWT_SECRET=secreto-demo-pe23
+```
+
+El archivo `.env` **no debe subirse al repositorio**.
+
+Se incluye únicamente:
+
+```text
+.env.example
+```
+
+---
+
+# Evidencias Postman PE-2.3
+
+## Prueba 1 - Token válido (201 Created)
+
+![Prueba 1](docs/screenshots/PE23_prueba1_201.png)
+
+---
+
+## Prueba 2 - Firma inválida (401 Unauthorized)
+
+![Prueba 2](docs/screenshots/PE23_prueba2_401.png)
+
+---
+
+## Prueba 3 - Token con alg:none (401 Unauthorized)
+
+![Prueba 3](docs/screenshots/PE23_prueba3_401.png)
